@@ -91,9 +91,9 @@ class MissionManager(Node):
 def main(args=None):
     rclpy.init(args=args)
 
-    minimal_service = MissionManager()
+    mission_manager = MissionManager()
 
-    rclpy.spin(minimal_service)
+    rclpy.spin(mission_manager)
 
     rclpy.shutdown()
 

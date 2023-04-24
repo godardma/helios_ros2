@@ -1,4 +1,6 @@
 from setuptools import setup
+import os
+from glob import glob
 
 package_name = 'helios_ros2'
 
@@ -10,6 +12,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        (os.path.join('share', package_name), glob('launch/*.launch.py')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -21,6 +24,7 @@ setup(
     entry_points={
         'console_scripts': [
             'mission_publisher = helios_ros2.mission_manager:main',
+            'boat_simulator = helios_ros2.boat_simulator:main',
         ],
     },
 )
