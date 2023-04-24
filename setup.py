@@ -25,6 +25,8 @@ setup(
         'console_scripts': [
             'mission_publisher = helios_ros2.mission_manager:main',
             'boat_simulator = helios_ros2.boat_simulator:main',
+            'line_follow = helios_ros2.line_follow:main',
+            'command = helios_ros2.command:main',
         ],
     },
 )

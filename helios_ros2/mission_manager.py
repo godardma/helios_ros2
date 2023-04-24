@@ -23,9 +23,11 @@ class MissionManager(Node):
 
     def __init__(self):
         super().__init__('mission_manager')
-        ref=[-3.0147,48.1988] #lon,lat
-        self.ref_lamb=deg_to_Lamb(ref[0],ref[1])
-        print(self.ref_lamb)
+        self.declare_parameter('X', 0.)
+        self.declare_parameter('Y', 0.)
+        x_ref= self.get_parameter('X').value
+        y_ref=self.get_parameter('Y').value
+        self.ref_lamb=[x_ref,y_ref]
         self.path_publisher = self.create_publisher(PointCloud, 'path', 1000)
         self.path_done_publisher = self.create_publisher(PointCloud, 'path_done', 1000)
         self.target_publisher = self.create_publisher(PointStamped, 'target', 1000)
@@ -48,6 +50,11 @@ class MissionManager(Node):
             self.path.points.append(pt)
 
         self.path_publisher.publish(self.path)
+        pt=PointStamped()
+        pt.point.x=self.path.points[0].x
+        pt.point.y=self.path.points[0].y
+        pt.header.frame_id="map"
+        self.target_publisher.publish(pt)
         
 
     def timer_callback(self):
@@ -66,11 +73,7 @@ class MissionManager(Node):
         self.tf_broadcaster.sendTransform(t)
         self.path_publisher.publish(self.path)
         self.path_done_publisher.publish(self.path_done)
-        pt=PointStamped()
-        pt.point.x=self.path.points[0].x
-        pt.point.y=self.path.points[0].y
-        pt.header.frame_id="map"
-        self.target_publisher.publish(pt)
+        
 
     def trigger_callback(self, request, response):
         response.success =True
@@ -80,6 +83,11 @@ class MissionManager(Node):
             self.path_done.points.append(old_target)
             self.get_logger().info('Changing target')
             response.message ="Next point"
+            pt=PointStamped()
+            pt.point.x=self.path.points[0].x
+            pt.point.y=self.path.points[0].y
+            pt.header.frame_id="map"
+            self.target_publisher.publish(pt)
         else:
             self.get_logger().info('Mission finished')
             response.message ="Finish"

@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import math
 
+
 def quaternion_from_euler(ai, aj, ak):
     ai /= 2.0
     aj /= 2.0
@@ -56,8 +57,9 @@ class BoatSimulator(Node):
     def timer_callback(self):
         #voiture de Dubins
         dt=0.02
-        self.x=self.x+np.cos(self.theta)*dt
-        self.y=self.y+np.sin(self.theta)*dt
+        v=4
+        self.x=self.x+v*np.cos(self.theta)*dt
+        self.y=self.y+v*np.sin(self.theta)*dt
         self.theta=self.theta+dt*self.comm
 
         self.pose.header.stamp = self.get_clock().now().to_msg()
@@ -82,7 +84,9 @@ class BoatSimulator(Node):
         self.pose_publisher.publish(self.pose)
     
     def commande_callback(self,msg):
-        self.comm=msg.data
+        # self.get_logger().info('commande :%f'%msg.data)
+        if not math.isnan(msg.data):
+            self.comm=msg.data
 
 
 def main(args=None):

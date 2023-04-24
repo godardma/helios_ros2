@@ -1,8 +1,43 @@
 # Helios Ros2
 
-Dossier présent sur l'ordi embarqué dans workspaceRos2/src
+Dossier présent sur l'ordi embarqué dans workspaceRos2/src (pas encore en fait)
 
-WORK IN PROGRESS
+WORK IN PROGRESS, actuellement une simulation fonctionnelle est proposée
+
+## Auteur :
+
+:student: Maël GODARD <mael.godard@ensta-bretagne.org> (FISE 2023)
+
+## Git Structure :
+
+* :file_folder: [/helios_ros2](helios_ros2) : **dossier contenant les sources**
+* :file_folder: [/launch](launch) : **dossier contenant les launcher**
+* :file_folder: [/path](path) : **dossier contenant les fichiers de path à suivre**
+* :file_folder: [/rviz2_config](rviz2_config) : **dossier contenant la config rviz2 conseillée**
+* :spiral_notepad: [/setup.py](setup.py)    **fichier de setup ROS2 python**
+* :spiral_notepad: [/README.md](README.md)
+
+## Technologies :
+
+* Ubuntu 20.04
+* Python
+* ROS2 foxy
+
+
+## Lancement
+
+* Cloner le repo dans un workspace ROS2 Foxy
+* Dans un premier terminal, lancer rviz2 et ouvrir la config jointe dans le dossier [/rviz2_config](rviz2_config)
+* Lancer la simulation :
+```bash
+colcon build --packages-select helios_ros2
+. install/setup.bash
+ros2 launch helios_ros2 helios.launch.py
+```
+
+## Notes
+
+Les positions (Pose) sont données dans le repère Lambert93 à un offset près (voir ref dans le launch file)
 
 ## Connexion en ssh au helios
 
