@@ -1,5 +1,6 @@
 from geometry_msgs.msg import TransformStamped,PoseStamped 
 from std_msgs.msg import Float64
+from visualization_msgs.msg import Marker
 from std_srvs.srv import Trigger
 from tf2_ros import TransformBroadcaster
 
@@ -9,6 +10,7 @@ from rclpy.node import Node
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+import os
 
 
 def quaternion_from_euler(ai, aj, ak):
@@ -39,6 +41,7 @@ class BoatSimulator(Node):
     def __init__(self):
         super().__init__('boat_simulator')
         self.pose_publisher = self.create_publisher(PoseStamped, 'pose', 1000)
+        self.marker_publisher = self.create_publisher(Marker, 'marker', 1000)
         self.subscription_pose = self.create_subscription(
             Float64,
             'commande',
@@ -51,6 +54,13 @@ class BoatSimulator(Node):
 
         self.pose = PoseStamped()
         self.pose.header.frame_id="map"
+
+        self.marker=Marker()
+        self.marker.header.frame_id="boat"
+        
+        self.marker.mesh_resource="file://"+os.getcwd()+"/src/helios_ros2/meshes/Catamaran.obj"
+        self.marker.mesh_use_embedded_materials=True
+        self.marker.ns=""
 
         self.comm=0.
         self.theta,self.x,self.y=0.,0.,0.
@@ -84,8 +94,39 @@ class BoatSimulator(Node):
             t.transform.rotation.z = self.pose.pose.orientation.z
             t.transform.rotation.w = self.pose.pose.orientation.w
 
+            self.marker.header.stamp =self.get_clock().now().to_msg()
+    
+
+            self.marker.type = 10
+            self.marker.id = 0
+            self.marker.action = 0
+
+            self.marker.scale.x = 0.001
+            self.marker.scale.y = 0.001
+            self.marker.scale.z = 0.001
+
+            # self.marker.color.r = 0.2
+            # self.marker.color.g = 0.2
+            # self.marker.color.b = 0.9
+            # self.marker.color.a = 0.8
+
+            q_mark=quaternion_from_euler(np.pi/2.,0.,0.)
+            self.pose.pose.orientation.z=q[2]
+            self.pose.pose.orientation.w=q[3]
+
+            self.marker.pose.position.x = 0.
+            self.marker.pose.position.y = 0.
+            self.marker.pose.position.z = 0.
+            self.marker.pose.orientation.x = q_mark[0]
+            self.marker.pose.orientation.y = 0.0
+            self.marker.pose.orientation.z = 0.0
+            self.marker.pose.orientation.w = q_mark[3]
+
             self.tf_broadcaster.sendTransform(t)
             self.pose_publisher.publish(self.pose)
+            self.marker_publisher.publish(self.marker)
+
+
     
     def commande_callback(self,msg):
         # self.get_logger().info('commande :%f'%msg.data)
