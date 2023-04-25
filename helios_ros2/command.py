@@ -56,6 +56,7 @@ class CommandNode(Node):
             1000)
         self.comm_publisher = self.create_publisher(Float64, 'commande', 1000)
         self.theta=0.
+        self.theta_sav=0.
         
 
     def pose_callback(self,msg):
@@ -64,8 +65,10 @@ class CommandNode(Node):
 
     def theta_des_callback(self,msg):
         theta_des=msg.data
-        Kp=0.1
-        theta_dot=sawtooth(theta_des-self.theta)
+        Kp=1.
+        Kd=3.
+        theta_dot=Kp*sawtooth(theta_des-self.theta)-Kd*sawtooth(self.theta-self.theta_sav)
+        self.theta_sav=self.theta
         command=Float64()
         command.data=theta_dot
         self.comm_publisher.publish(command)
