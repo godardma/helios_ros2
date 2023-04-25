@@ -58,6 +58,7 @@ class CommandNode(Node):
         self.theta=0.
         self.theta_sav=0.
         
+        
 
     def pose_callback(self,msg):
         roll,pitch,yaw=euler_from_quaternion(msg.pose.orientation.x,msg.pose.orientation.y,msg.pose.orientation.z,msg.pose.orientation.w)

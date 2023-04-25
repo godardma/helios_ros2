@@ -32,9 +32,11 @@ class MissionManager(Node):
         self.path_done_publisher = self.create_publisher(PointCloud, 'path_done', 1000)
         self.target_publisher = self.create_publisher(PointStamped, 'target', 1000)
         self.trigger_serv=self.create_service(Trigger, 'trigger', self.trigger_callback)
+        self.cli = self.create_client(Trigger, 'finish')
         self.tf_broadcaster = TransformBroadcaster(self)
         timer_period = 0.5  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
+        self.req=Trigger.Request()
         f=open("../workspaceRos2/src/helios_ros2/path/triangle_test.txt")
         lines=f.readlines()
         self.path = PointCloud()
@@ -89,6 +91,7 @@ class MissionManager(Node):
             pt.header.frame_id="map"
             self.target_publisher.publish(pt)
         else:
+            self.future = self.cli.call_async(self.req)
             self.get_logger().info('Mission finished')
             response.message ="Finish"
 
