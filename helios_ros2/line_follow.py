@@ -63,8 +63,7 @@ class LineFollow(Node):
 
     def __init__(self):
         super().__init__('line_follow')
-        ref=[-3.0147,48.1988] #lon,lat
-        self.ref_lamb=deg_to_Lamb(ref[0],ref[1])
+        self.iter=0
         self.subscription_pose = self.create_subscription(
             PoseStamped,
             'pose',
@@ -95,9 +94,17 @@ class LineFollow(Node):
         self.b[1,0]=msg.point.y
 
     def timer_callback(self):
+        # val=validation(self.a,self.b,self.m)
+        # self.get_logger().info('val : %f'%val)
+        if self.iter>0:
+            self.iter+=1
         if(validation(self.a,self.b,self.m)):
-            self.future = self.cli.call_async(self.req)
-            self.get_logger().info('%s'%self.future)
+            if self.iter==0:
+                self.iter+=1
+            if self.iter==5:
+                self.future = self.cli.call_async(self.req)
+        else:
+            self.iter=0
         theta_des=guidage(self.a,self.b,self.m,1)
         msg_td=Float64()
         msg_td.data=theta_des
