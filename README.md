@@ -39,6 +39,14 @@ ros2 launch helios_ros2 helios.launch.py
 
 Les positions (Pose) sont données dans le repère Lambert93 à un offset près (voir ref dans le launch file)
 
+Il est possible de préparer plusieurs missions à l'avance. Pour celà il suffit d'enregistrer les waypoints dans un fichier texte au format suivant:
+
+* Un point par ligne
+* Un point est défini par sa latitude et se longitude, séparées par une virgule (et sans espace)
+* Les latitudes et longitudes sont en degrés décimaux
+
+Les fichiers sont ensuite à stocker dans le dossier [path](path) et leur nom est à renseigner sous "pathfile_name" dans le [launcher](launch) (un seul par launch)
+
 ## Connexion en ssh au helios
 
 Se connecter au reseau munu_ubnt, puis dans un terminal :

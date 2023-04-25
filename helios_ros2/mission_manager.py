@@ -25,6 +25,7 @@ class MissionManager(Node):
         super().__init__('mission_manager')
         self.declare_parameter('X', 0.)
         self.declare_parameter('Y', 0.)
+        self.declare_parameter('pathfile_name')
         x_ref= self.get_parameter('X').value
         y_ref=self.get_parameter('Y').value
         self.ref_lamb=[x_ref,y_ref]
@@ -37,7 +38,10 @@ class MissionManager(Node):
         timer_period = 0.5  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.req=Trigger.Request()
-        f=open("../workspaceRos2/src/helios_ros2/path/triangle_test.txt")
+
+        pathfile_name=self.get_parameter('pathfile_name').value
+        self.get_logger().info('file %s loaded'%pathfile_name)
+        f=open("../workspaceRos2/src/helios_ros2/path/"+pathfile_name+".txt")
         lines=f.readlines()
         self.path = PointCloud()
         self.path_done = PointCloud()
