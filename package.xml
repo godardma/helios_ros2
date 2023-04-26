@@ -3,7 +3,7 @@
 <package format="3">
   <name>helios_ros2</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
+  <description>package ROS2 pour mission autonome de l'USV helios</description>
   <maintainer email="mael.godard@ensta-bretagne.org">neo</maintainer>
   <license>TODO: License declaration</license>
 
