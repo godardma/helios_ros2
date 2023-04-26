@@ -15,6 +15,8 @@ ref_lamb=deg_to_Lamb(ref[0],ref[1])
 
 pathfile_name="triangle_test"
 
+logfile_name="logs_test"
+
 
 def generate_launch_description():
     ld = LaunchDescription()
@@ -24,7 +26,7 @@ def generate_launch_description():
         parameters=[
             {"X": ref_lamb[0]},
             {"Y": ref_lamb[1]},
-            {"pathfile_name":pathfile_name}
+            {"pathfile_name":pathfile_name},
         ]
     )
     boat_node = Node(
@@ -43,6 +45,7 @@ def generate_launch_description():
         parameters=[
             {"X": ref_lamb[0]},
             {"Y": ref_lamb[1]},
+            {"logfile_name":logfile_name},
         ]
     )
     command_node = Node(

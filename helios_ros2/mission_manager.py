@@ -41,7 +41,7 @@ class MissionManager(Node):
 
         pathfile_name=self.get_parameter('pathfile_name').value
         self.get_logger().info('file %s loaded'%pathfile_name)
-        f=open("../workspaceRos2/src/helios_ros2/path/"+pathfile_name+".txt")
+        f=open("src/helios_ros2/path/"+pathfile_name+".txt")
         lines=f.readlines()
         self.path = PointCloud()
         self.path_done = PointCloud()
@@ -49,7 +49,7 @@ class MissionManager(Node):
         self.path_done.header.frame_id="map"
         for line in lines:
             tab=line.split(",")
-            lat,lon=float(tab[0]),float(tab[1])
+            lon,lat=float(tab[0]),float(tab[1])
             X,Y=deg_to_Lamb(lon,lat)
             pt=Point32()
             pt.x,pt.y=X-self.ref_lamb[0],Y-self.ref_lamb[1]

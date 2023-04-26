@@ -16,6 +16,12 @@ def deg_to_Lamb (x1,y1):
     point=[(x1,y1)]
     for pt in transformer.itransform(point):
         return pt
+    
+def Lamb_to_deg (x1,y1):
+    transformer=Transformer.from_crs(2154,4326,always_xy=True)
+    point=[(x1,y1)]
+    for pt in transformer.itransform(point):
+        return pt
 
 def sawtooth(x):
     '''
@@ -75,6 +81,15 @@ class LineFollow(Node):
             self.target_callback,
             1000)
         self.thetad_publisher = self.create_publisher(Float64, 'theta_des', 1000)
+        self.declare_parameter('logfile_name')
+        self.declare_parameter('X', 0.)
+        self.declare_parameter('Y', 0.)
+        self.x_ref= self.get_parameter('X').value
+        self.y_ref=self.get_parameter('Y').value
+        logfile_name=self.get_parameter('logfile_name').value
+        self.get_logger().info('logs written in %s'%logfile_name)
+        self.f_traj=open("src/helios_ros2/logs/"+logfile_name+"_traj.txt","w")
+        self.f_path=open("src/helios_ros2/logs/"+logfile_name+"_path.txt","w")
         self.cli = self.create_client(Trigger, 'trigger')
         self.req=Trigger.Request()
         timer_period = 0.02  # seconds
@@ -86,12 +101,20 @@ class LineFollow(Node):
     def pose_callback(self,msg):
         self.m[0,0]=msg.pose.position.x
         self.m[1,0]=msg.pose.position.y
+        x,y=msg.pose.position.x+self.x_ref,msg.pose.position.y+self.y_ref
+        pt=Lamb_to_deg(x,y)
+        lon,lat=pt[0],pt[1]
+        self.f_traj.write(str(lon)+","+str(lat)+"\n")
 
     def target_callback(self,msg):
         self.a[0,0]=self.b[0,0]
         self.a[1,0]=self.b[1,0]
         self.b[0,0]=msg.point.x
         self.b[1,0]=msg.point.y
+        x,y=msg.point.x+self.x_ref,msg.point.y+self.y_ref
+        pt=Lamb_to_deg(x,y)
+        lon,lat=pt[0],pt[1]
+        self.f_path.write(str(lon)+","+str(lat)+"\n")
 
     def timer_callback(self):
         # val=validation(self.a,self.b,self.m)
