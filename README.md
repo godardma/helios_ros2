@@ -31,16 +31,18 @@ WORK IN PROGRESS, actuellement une simulation fonctionnelle est proposée
 * Dans un premier terminal, lancer rviz2 et ouvrir la config jointe dans le dossier [/rviz2_config](rviz2_config)
 * Lancer la simulation :
 ```bash
-colcon build --packages-select helios_ros2
+colcon build --symlink-install --packages-select helios_ros2
 . install/setup.bash
 ros2 launch helios_ros2 helios.launch.py
 ```
+
+Le package étant en python, le paramètre --symlink-install permet de ne pas avoir à recompiler le package après un changement dans un des noeuds.
 
 ## Logs
 
 Une écriture de logs est implémentée. Le nom du fichier peut être choisi depuis le launcher et le chemin à suivre et la trajectoire se retrouvent dans le dossier [logs](logs).
 
-Pour exploiter ces logs, se placer dans le dossier helios_ros2 et exécuter la commande :
+Pour exploiter ces logs, se placer dans le dossier helios_ros2 (à la racine du package) et exécuter la commande :
 ```bash
 python3 helios_ros2/create_gpx.py logs_test
 ```
@@ -54,15 +56,17 @@ Il est possible de préparer plusieurs missions à l'avance. Pour celà il suffi
 
 * Un point par ligne
 * Un point est défini par sa longitude et sa latitude (à Guerledan de l'ordre de -3° et 48°) , séparées par une virgule (et sans espace)
-* Les latitudes et longitudes sont en degrés décimaux
+* Les longitudes et latitudes sont en degrés décimaux
 
 Les fichiers sont ensuite à stocker dans le dossier [path](path) et leur nom est à renseigner sous "pathfile_name" dans le [launcher](launch) (un seul par launch)
 
 Pour que l'ajout du mesh se fasse correctement, il est nécessaire de lancer le launcher depuis la racine du workspace ROS2 contenant le package (i.e. depuis le dossier workspaceRos2 si le package helios_ros2 se trouve dans le dossier workspaceRos2/src)
 
+En cas de difficulté à compiler ce repo sous ROS2 humble (pour une machine sous ubuntu 22.04 par exemple), il est conseillé d'utiliser un docker ROS Foxy comme indiqué [ici](https://hub.docker.com/_/ros/)
+
 ## Connexion en ssh au helios
 
-Se connecter au reseau munu_ubnt, puis dans un terminal :
+Se connecter au reseau munu_ubnt (il sera nécessaire de se fixer une adresse IP de la forme 10.43.20.XXX), puis dans un terminal :
 
 ```bash
 ssh s100@10.43.20.223
@@ -71,7 +75,7 @@ ssh s100@10.43.20.223
 
 ## Utilisation
 
-Ouvrir le port du recepteur GNSS et envoyer les corrections rtk dans un terminal:
+Ouvrir le port du recepteur GNSS et envoyer les corrections RTK dans un terminal:
 
 ```bash
 narval_supply_control.py -e usbl
