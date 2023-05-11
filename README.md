@@ -36,7 +36,7 @@ colcon build --symlink-install --packages-select helios_ros2
 ros2 launch helios_ros2 helios.launch.py
 ```
 
-Le package étant en python, le paramètre --symlink-install permet de ne pas avoir à recompiler le package après un changement dans un des noeuds.
+Le package étant en python, le paramètre --symlink-install permet de ne pas avoir à recompiler le package après un changement dans un des noeuds. 
 
 ## Logs
 
