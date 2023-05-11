@@ -38,7 +38,7 @@ def generate_launch_description():
             {"Y": ref_lamb[1]},
         ]
     )
-    guidance_node = Node(
+    navigation_node = Node(
         package="helios_ros2",
         executable="line_follow",
         output="screen",
@@ -57,7 +57,7 @@ def generate_launch_description():
             {"Y": ref_lamb[1]},
         ]
     )
-    ld.add_action(guidance_node)
+    ld.add_action(navigation_node)
     ld.add_action(mission_node)
     ld.add_action(boat_node)
     ld.add_action(command_node)
