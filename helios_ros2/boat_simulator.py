@@ -45,12 +45,13 @@ class BoatSimulator(Node):
             self.commande_callback,
             1000)
         self.tf_broadcaster = TransformBroadcaster(self)
+        self.tf_broadcaster_ned = TransformBroadcaster(self)
         timer_period = 0.02  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.mission_finished_serv=self.create_service(Trigger, 'finish', self.finish_callback)
 
         self.pose = PoseStamped()
-        self.pose.header.frame_id="map"
+        self.pose.header.frame_id="NED"
 
 
         self.comm=0.
@@ -75,7 +76,7 @@ class BoatSimulator(Node):
             self.pose.pose.orientation.w=q[3]
             t = TransformStamped()
             t.header.stamp = self.get_clock().now().to_msg()
-            t.header.frame_id = 'map'
+            t.header.frame_id = 'NED'
             t.child_frame_id = 'boat'
             t.transform.translation.x = self.pose.pose.position.x
             t.transform.translation.y =self.pose.pose.position.y
@@ -91,6 +92,20 @@ class BoatSimulator(Node):
 
             self.tf_broadcaster.sendTransform(t)
             self.pose_publisher.publish(self.pose)
+
+            t_ned = TransformStamped()
+            t_ned.header.stamp = self.get_clock().now().to_msg()
+            t_ned.header.frame_id = 'map'
+            t_ned.child_frame_id = 'NED'
+            t_ned.transform.translation.x = 0.
+            t_ned.transform.translation.y =0.
+            t_ned.transform.translation.z = 0.
+            t_ned.transform.rotation.x = 0.
+            t_ned.transform.rotation.y = -1.
+            t_ned.transform.rotation.z =0.
+            t_ned.transform.rotation.w = 0.
+
+            self.tf_broadcaster_ned.sendTransform(t_ned)
 
 
     
