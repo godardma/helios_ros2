@@ -1,8 +1,6 @@
 # Helios Ros2
 
-Dossier présent sur l'ordi embarqué dans workspaceRos2/src
-
-Suite aux dernières modifications la simulation peut ne plus être fonctionnelle
+Dossier présent sur l'ordi embarqué du Helios sous ros2_ws/src
 
 ## Auteur :
 
