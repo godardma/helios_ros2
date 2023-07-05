@@ -6,7 +6,6 @@ from tf2_ros import TransformBroadcaster
 import rclpy
 from rclpy.node import Node
 
-import matplotlib.pyplot as plt
 import numpy as np
 import math
 import os

@@ -23,6 +23,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'gnss_infos = helios_ros2.gnss_infos:main',
             'mission_publisher = helios_ros2.mission_manager:main',
             'boat_simulator = helios_ros2.boat_simulator:main',
             'line_follow = helios_ros2.line_follow:main',

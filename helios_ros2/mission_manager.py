@@ -6,7 +6,6 @@ from tf2_ros import TransformBroadcaster
 import rclpy
 from rclpy.node import Node
 
-import matplotlib.pyplot as plt
 import numpy as np
 import math
 from pyproj import Proj, transform
@@ -44,21 +43,21 @@ class MissionManager(Node):
         lines=f.readlines()
         self.path = PointCloud()
         self.path_done = PointCloud()
-        self.path.header.frame_id="map"
-        self.path_done.header.frame_id="map"
+        self.path.header.frame_id="NED"
+        self.path_done.header.frame_id="NED"
         for line in lines:
             tab=line.split(",")
             lon,lat=float(tab[0]),float(tab[1])
             X,Y=deg_to_Lamb(lon,lat)
             pt=Point32()
-            pt.x,pt.y=X-self.ref_lamb[0],Y-self.ref_lamb[1]
+            pt.y,pt.x=X-self.ref_lamb[0],Y-self.ref_lamb[1]
             self.path.points.append(pt)
 
         self.path_publisher.publish(self.path)
         pt=PointStamped()
         pt.point.x=self.path.points[0].x
         pt.point.y=self.path.points[0].y
-        pt.header.frame_id="map"
+        pt.header.frame_id="NED"
         self.target_publisher.publish(pt)
         
 
@@ -78,7 +77,7 @@ class MissionManager(Node):
             pt=PointStamped()
             pt.point.x=self.path.points[0].x
             pt.point.y=self.path.points[0].y
-            pt.header.frame_id="map"
+            pt.header.frame_id="NED"
             self.target_publisher.publish(pt)
         else:
             self.future = self.cli.call_async(self.req)

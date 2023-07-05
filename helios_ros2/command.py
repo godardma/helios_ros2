@@ -4,7 +4,6 @@ from geometry_msgs.msg import PoseStamped, PointStamped
 import rclpy
 from rclpy.node import Node
 
-import matplotlib.pyplot as plt
 import numpy as np
 import math
 from pyproj import Proj, transform

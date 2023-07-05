@@ -10,35 +10,16 @@ def deg_to_Lamb (x1,y1):
     for pt in transformer.itransform(point):
         return pt
     
-# ref=[-3.0147,48.1988]     #Guerledan
-ref=[-4.4738,48.4183]   #Brest
+ref=[-3.0147,48.1988]
 ref_lamb=deg_to_Lamb(ref[0],ref[1])
 
-pathfile_name="ligne_stade"
+pathfile_name="star_example"
 
 logfile_name="logs_test"
 
 
 def generate_launch_description():
     ld = LaunchDescription()
-    hemisphere_node = Node(
-        package="hemisphere_v500",
-        executable="hemisphere_v500_node",
-        parameters=[
-            {"X": ref_lamb[0]},
-            {"Y": ref_lamb[1]},
-            {"pathfile_name":pathfile_name},
-        ]
-    )
-    gnss_infos_node = Node(
-        package="helios_ros2",
-        executable="gnss_infos",
-        parameters=[
-            {"X": ref_lamb[0]},
-            {"Y": ref_lamb[1]},
-            {"pathfile_name":pathfile_name},
-        ]
-    )
     mission_node = Node(
         package="helios_ros2",
         executable="mission_publisher",
@@ -46,6 +27,15 @@ def generate_launch_description():
             {"X": ref_lamb[0]},
             {"Y": ref_lamb[1]},
             {"pathfile_name":pathfile_name},
+        ]
+    )
+    boat_node = Node(
+        package="helios_ros2",
+        executable="boat_simulator",
+        output="screen",
+        parameters=[
+            {"X": ref_lamb[0]},
+            {"Y": ref_lamb[1]},
         ]
     )
     navigation_node = Node(
@@ -67,9 +57,8 @@ def generate_launch_description():
             {"Y": ref_lamb[1]},
         ]
     )
-    ld.add_action(hemisphere_node)
-    ld.add_action(gnss_infos_node)
     ld.add_action(navigation_node)
     ld.add_action(mission_node)
+    ld.add_action(boat_node)
     ld.add_action(command_node)
     return ld
