@@ -97,6 +97,4 @@ Il est possible de préparer plusieurs missions à l'avance. Pour celà il suffi
 
 Les fichiers sont ensuite à stocker dans le dossier [path](path) et leur nom est à renseigner sous "pathfile_name" dans le [launcher](launch) (un seul par launch)
 
-Pour que l'ajout du mesh se fasse correctement, il est nécessaire de lancer le launcher depuis la racine du workspace ROS2 contenant le package (i.e. depuis le dossier workspaceRos2 si le package helios_ros2 se trouve dans le dossier workspaceRos2/src)
-
 En cas de difficulté à compiler ce repo sous ROS2 humble (pour une machine sous ubuntu 22.04 par exemple), il est conseillé d'utiliser un docker ROS Foxy comme indiqué [ici](https://hub.docker.com/_/ros/)
