@@ -76,10 +76,10 @@ def generate_launch_description():
             {"Y": ref_lamb[1]},
         ]
     )
-    # ld.add_action(hemisphere_node)
+    ld.add_action(hemisphere_node)
     ld.add_action(gnss_infos_node)
     ld.add_action(navigation_node)
     ld.add_action(mission_node)
     ld.add_action(command_node)
-    # ld.add_action(motors_node)
+    ld.add_action(motors_node)
     return ld
