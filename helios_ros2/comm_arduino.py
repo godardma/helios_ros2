@@ -22,8 +22,17 @@ class MotorNode(Node):
         self.motors_on=True
         self.mission_finished_serv=self.create_service(Trigger, 'finish', self.finish_callback)
         self.ser = serial.Serial('/dev/narval_motors', 115200, timeout=0.5)
+        timer_period = 0.02  # seconds
+        self.timer = self.create_timer(timer_period, self.timer_callback)
+        self.i=0
         
-        
+    def timer_callback(self):
+        msg = self.ser.readline()
+        msg_str = str(msg)
+        if  len(msg_str)>6:
+            self.i+=1
+            if self.i%10==0:
+                self.get_logger().info(msg_str[2:-5])
 
     def commande_callback(self,msg):
         try:
@@ -34,7 +43,7 @@ class MotorNode(Node):
                 cons_gain=-120.
             cons_ard=cons_gain+120.
             if self.motors_on:
-                self.get_logger().info('commande :%f'%cons_gain)
+                # self.get_logger().info('commande :%f'%cons_gain)
                 self.ser.write(struct.pack('>B', cons_gain))
             else:
                 self.get_logger().info('mission finie')
