@@ -100,7 +100,7 @@ class LineFollow(Node):
     def pose_callback(self,msg):
         self.m[0,0]=msg.pose.position.x
         self.m[1,0]=msg.pose.position.y
-        x,y=msg.pose.position.x+self.x_ref,msg.pose.position.y+self.y_ref
+        x,y=msg.pose.position.y+self.x_ref,msg.pose.position.x+self.y_ref
         pt=Lamb_to_deg(x,y)
         lon,lat=pt[0],pt[1]
         self.f_traj.write(str(lon)+","+str(lat)+"\n")
@@ -110,7 +110,7 @@ class LineFollow(Node):
         self.a[1,0]=self.b[1,0]
         self.b[0,0]=msg.point.x
         self.b[1,0]=msg.point.y
-        x,y=msg.point.x+self.x_ref,msg.point.y+self.y_ref
+        x,y=msg.point.y+self.x_ref,msg.point.x+self.y_ref
         pt=Lamb_to_deg(x,y)
         lon,lat=pt[0],pt[1]
         self.f_path.write(str(lon)+","+str(lat)+"\n")
@@ -127,7 +127,7 @@ class LineFollow(Node):
                 self.future = self.cli.call_async(self.req)
         else:
             self.iter=0
-        theta_des=guidage(self.a,self.b,self.m,1)
+        theta_des=guidage(self.a,self.b,self.m,3)
         msg_td=Float64()
         msg_td.data=theta_des
         # self.get_logger().info('theta : %f'%theta_des)

@@ -65,12 +65,13 @@ class CommandNode(Node):
 
     def theta_des_callback(self,msg):
         theta_des=msg.data
-        Kp=0.5
-        Kd=0.5
+        Kp=15.0
+        Kd=0.0
         theta_dot=Kp*sawtooth(theta_des-self.theta)-Kd*sawtooth(self.theta-self.theta_sav)
         self.theta_sav=self.theta
         command=Float64()
         command.data=theta_dot
+        # self.get_logger().info('comm %f'%theta_dot)
         self.comm_publisher.publish(command)
 
 

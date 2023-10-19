@@ -10,13 +10,13 @@ def deg_to_Lamb (x1,y1):
     for pt in transformer.itransform(point):
         return pt
     
-# ref=[-3.0147,48.1988]     #Guerledan
-ref=[-4.4738,48.4183]   #Brest
+ref=[-3.0147,48.1988]     #Guerledan
+# ref=[-4.4738,48.4183]   #Brest
 ref_lamb=deg_to_Lamb(ref[0],ref[1])
 
-pathfile_name="ligne_stade"
+pathfile_name="test_guerl"
 
-logfile_name="logs_test"
+logfile_name="logs_der"
 
 
 def generate_launch_description():
