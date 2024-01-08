@@ -31,7 +31,7 @@ class MotorNode(Node):
         msg_str = str(msg)
         if  len(msg_str)>6:
             self.i+=1
-            if self.i%8==0:
+            if self.i%20==0:
                 self.get_logger().info(msg_str[2:-5])
 
     def commande_callback(self,msg):

@@ -54,9 +54,21 @@ class CommandNode(Node):
             self.theta_des_callback,
             1000)
         self.comm_publisher = self.create_publisher(Float64, 'commande', 1000)
+        timer_period = 0.01  # seconds
+        self.timer = self.create_timer(timer_period, self.timer_callback)
         self.theta=0.
         self.theta_sav=0.
+        self.theta_des=0.
         
+    def timer_callback(self):
+        Kp=20.0
+        Kd=0.0
+        theta_dot=Kp*sawtooth(self.theta_des-self.theta)-Kd*sawtooth(self.theta-self.theta_sav)
+        self.theta_sav=self.theta
+        command=Float64()
+        command.data=theta_dot
+        # self.get_logger().info('comm %f'%theta_dot)
+        self.comm_publisher.publish(command)
         
 
     def pose_callback(self,msg):
@@ -64,15 +76,8 @@ class CommandNode(Node):
         self.theta=yaw
 
     def theta_des_callback(self,msg):
-        theta_des=msg.data
-        Kp=15.0
-        Kd=0.0
-        theta_dot=Kp*sawtooth(theta_des-self.theta)-Kd*sawtooth(self.theta-self.theta_sav)
-        self.theta_sav=self.theta
-        command=Float64()
-        command.data=theta_dot
-        # self.get_logger().info('comm %f'%theta_dot)
-        self.comm_publisher.publish(command)
+        self.theta_des=msg.data
+        
 
 
 
