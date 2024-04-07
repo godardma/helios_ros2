@@ -11,6 +11,8 @@ import math
 from pyproj import Proj, transform
 from pyproj import Transformer
 
+from ament_index_python.packages import get_package_share_directory
+
 def deg_to_Lamb (x1,y1):
     transformer=Transformer.from_crs(4326,2154,always_xy=True)
     point=[(x1,y1)]
@@ -39,7 +41,10 @@ class MissionManager(Node):
 
         pathfile_name=self.get_parameter('pathfile_name').value
         self.get_logger().info('file %s loaded'%pathfile_name)
-        f=open("src/helios_ros2/path/"+pathfile_name+".txt")
+
+        package_share_directory = get_package_share_directory('helios_ros2')
+
+        f=open(package_share_directory+"/path/"+pathfile_name+".txt")
         lines=f.readlines()
         self.path = PointCloud()
         self.path_done = PointCloud()
