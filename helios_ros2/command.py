@@ -54,7 +54,7 @@ class CommandNode(Node):
             self.theta_des_callback,
             1000)
         self.comm_publisher = self.create_publisher(Float64, 'commande', 1000)
-        timer_period = 0.01  # seconds
+        timer_period = 0.1  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.theta=0.
         self.theta_sav=0.
@@ -67,7 +67,8 @@ class CommandNode(Node):
         self.theta_sav=self.theta
         command=Float64()
         command.data=theta_dot
-        # self.get_logger().info('comm %f'%theta_dot)
+        # self.get_logger().info('comm %f'%self.theta_des)
+        # self.get_logger().info('theta %f'%self.theta)
         self.comm_publisher.publish(command)
         
 
