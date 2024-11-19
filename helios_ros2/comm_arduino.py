@@ -56,7 +56,7 @@ class MotorNode(Node):
             if self.motors_on:
                 # self.get_logger().info('commande :%f'%cons_ard)
                 # self.ser.write(struct.pack('>B', cons_ard))
-                message=parse_command(cons_gain,20)
+                message=parse_command(cons_gain,60)
                 self.ser.write(message.encode('utf-8'))
             else:
                 self.get_logger().info('mission finie')

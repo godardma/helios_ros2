@@ -65,7 +65,7 @@ class CommandNode(Node):
     def timer_callback(self):
         # Kp=20.0
         # Kd=10.0 
-        Kp=60.0
+        Kp=20.0
         # Kd=200.0
         Kd=10
         self.up=Kp*sawtooth(self.theta_des-self.theta)
