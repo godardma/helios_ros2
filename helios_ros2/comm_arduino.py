@@ -30,6 +30,9 @@ class MotorNode(Node):
         timer_period = 0.01  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i=0
+        self.cons_gain=0.
+        message="0 0\n"
+        self.ser.write(message.encode('utf-8'))
         
     def timer_callback(self):
         try:
@@ -44,7 +47,7 @@ class MotorNode(Node):
 
     def commande_callback(self,msg):
         try:
-            cons_gain=int(msg.data)
+            self.cons_gain=int(msg.data)
             # self.get_logger().info('comm gain :%f'%cons_gain)
             # if cons_gain>119:
             #     cons_gain=119.
@@ -56,7 +59,8 @@ class MotorNode(Node):
             if self.motors_on:
                 # self.get_logger().info('commande :%f'%cons_ard)
                 # self.ser.write(struct.pack('>B', cons_ard))
-                message=parse_command(cons_gain,60)
+                message=parse_command(self.cons_gain,50)
+                self.get_logger().info(message)
                 self.ser.write(message.encode('utf-8'))
             else:
                 self.get_logger().info('mission finie')
