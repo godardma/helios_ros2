@@ -10,6 +10,9 @@ import math
 from pyproj import Proj, transform
 from pyproj import Transformer
 
+from ament_index_python.packages import get_package_share_directory
+
+
 def deg_to_Lamb (x1,y1):
     transformer=Transformer.from_crs(4326,2154,always_xy=True)
     point=[(x1,y1)]
@@ -73,12 +76,12 @@ class LineFollow(Node):
             PoseStamped,
             'pose',
             self.pose_callback,
-            1000)
+            10)
         self.subscription_target = self.create_subscription(
             PointStamped,
             'target',
             self.target_callback,
-            1000)
+            1)
         self.thetad_publisher = self.create_publisher(Float64, 'theta_des', 1000)
         self.declare_parameter('logfile_name')
         self.declare_parameter('X', 0.)
@@ -87,8 +90,10 @@ class LineFollow(Node):
         self.y_ref=self.get_parameter('Y').value
         logfile_name=self.get_parameter('logfile_name').value
         self.get_logger().info('logs written in %s'%logfile_name)
-        self.f_traj=open("src/helios_ros2/logs/"+logfile_name+"_traj.txt","w")
-        self.f_path=open("src/helios_ros2/logs/"+logfile_name+"_path.txt","w")
+
+        package_share_directory = get_package_share_directory('helios_ros2')
+        self.f_traj=open(package_share_directory+"/../../../../src/helios_ros2/logs/"+logfile_name+"_traj.txt","w")
+        self.f_path=open(package_share_directory+"/../../../../src/helios_ros2/logs/"+logfile_name+"_path.txt","w")
         self.cli = self.create_client(Trigger, 'trigger')
         self.req=Trigger.Request()
         timer_period = 0.02  # seconds
@@ -98,14 +103,20 @@ class LineFollow(Node):
         
 
     def pose_callback(self,msg):
-        self.m[0,0]=msg.pose.position.x
-        self.m[1,0]=msg.pose.position.y
-        x,y=msg.pose.position.y+self.x_ref,msg.pose.position.x+self.y_ref
-        pt=Lamb_to_deg(x,y)
-        lon,lat=pt[0],pt[1]
-        self.f_traj.write(str(lon)+","+str(lat)+"\n")
+        try:
+            self.m[0,0]=msg.pose.position.x
+            self.m[1,0]=msg.pose.position.y
+            x,y=msg.pose.position.y+self.x_ref,msg.pose.position.x+self.y_ref
+            pt=Lamb_to_deg(x,y)
+            lon,lat=pt[0],pt[1]
+            self.f_traj.write(str(lon)+","+str(lat)+"\n")
+        except Exception as e:
+            self.get_logger().info('Exception caught')
+            pass
 
     def target_callback(self,msg):
+        # if self.a.all()!=self.b.all():
+        self.get_logger().info('changing')
         self.a[0,0]=self.b[0,0]
         self.a[1,0]=self.b[1,0]
         self.b[0,0]=msg.point.x
@@ -118,16 +129,22 @@ class LineFollow(Node):
     def timer_callback(self):
         # val=validation(self.a,self.b,self.m)
         # self.get_logger().info('val : %f'%val)
-        if self.iter>0:
-            self.iter+=1
+
+        # if self.iter>0:
+        #     self.iter+=1
         if(validation(self.a,self.b,self.m)):
-            if self.iter==0:
-                self.iter+=1
-            if self.iter==5:
+            self.iter+=1
+            if self.iter==2:
                 self.future = self.cli.call_async(self.req)
+                self.iter=0
+        
+            # if self.iter==0:
+            #     self.iter+=1
+            # elif self.iter==5:
+            #     self.future = self.cli.call_async(self.req)
         else:
             self.iter=0
-        theta_des=guidage(self.a,self.b,self.m,3)
+        theta_des=guidage(self.a,self.b,self.m,7)
         msg_td=Float64()
         msg_td.data=theta_des
         # self.get_logger().info('theta : %f'%theta_des)

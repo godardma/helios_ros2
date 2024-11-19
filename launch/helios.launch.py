@@ -10,13 +10,14 @@ def deg_to_Lamb (x1,y1):
     for pt in transformer.itransform(point):
         return pt
     
-ref=[-3.0147,48.1988]     #Guerledan
+# ref=[-3.0147,48.1988]     #Guerledan
+ref=[-3.014929, 48.199199]  #Guerledan2
 # ref=[-4.4738,48.4183]   #Brest
 ref_lamb=deg_to_Lamb(ref[0],ref[1])
 
-pathfile_name="test_guerl"
+pathfile_name="boustro_bis.csv"
 
-logfile_name="logs_der"
+logfile_name="Guerl_SLE_J3_5"
 
 
 def generate_launch_description():

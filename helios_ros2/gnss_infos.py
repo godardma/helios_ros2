@@ -46,12 +46,13 @@ class GnssInfos(Node):
 
     def __init__(self):
         super().__init__('gnss_infos')
-        self.declare_parameter('X', 0.)
-        self.declare_parameter('Y', 0.)
+        self.declare_parameter('X', 253527.41)	#Guerledan
+        self.declare_parameter('Y', 6805773.69)
         self.declare_parameter('pathfile_name')
         x_ref= self.get_parameter('X').value
         y_ref=self.get_parameter('Y').value
         self.ref_lamb=[x_ref,y_ref]
+        self.get_logger().info('ref %f %f'%(x_ref,y_ref))
         print(x_ref,y_ref)
         self.pose_publisher = self.create_publisher(PoseStamped, 'pose', 1000)
         self.subscription_bin3 = self.create_subscription(

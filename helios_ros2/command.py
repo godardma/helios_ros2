@@ -47,28 +47,45 @@ class CommandNode(Node):
             PoseStamped,
             'pose',
             self.pose_callback,
-            1000)
+            10)
         self.subscription_target = self.create_subscription(
             Float64,
             'theta_des',
             self.theta_des_callback,
-            1000)
-        self.comm_publisher = self.create_publisher(Float64, 'commande', 1000)
+            10)
+        self.comm_publisher = self.create_publisher(Float64, 'commande', 10)
         timer_period = 0.1  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.theta=0.
         self.theta_sav=0.
         self.theta_des=0.
+        self.up=0.
+        self.ud=0.
         
     def timer_callback(self):
-        Kp=20.0
-        Kd=0.0
-        theta_dot=Kp*sawtooth(self.theta_des-self.theta)-Kd*sawtooth(self.theta-self.theta_sav)
+        # Kp=20.0
+        # Kd=10.0 
+        Kp=60.0
+        # Kd=200.0
+        Kd=10
+        self.up=Kp*sawtooth(self.theta_des-self.theta)
+        
+
+        # self.get_logger().info('prop %f'%(Kp*sawtooth(self.theta_des-self.theta)))
+
+        if (self.theta_sav-self.theta)!=0:
+            self.ud=Kd*sawtooth(self.theta-self.theta_sav)
+            # self.get_logger().info('ud %f'%self.ud)
+            # self.get_logger().info('up %f'%self.up)
+
+            # self.get_logger().info('theta %f'%self.theta)
+            # self.get_logger().info('save %f'%self.theta_sav)
+
         self.theta_sav=self.theta
+        theta_dot=self.up-self.ud
         command=Float64()
         command.data=theta_dot
-        # self.get_logger().info('comm %f'%self.theta_des)
-        # self.get_logger().info('theta %f'%self.theta)
+
         self.comm_publisher.publish(command)
         
 
