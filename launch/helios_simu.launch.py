@@ -13,7 +13,7 @@ def deg_to_Lamb (x1,y1):
 ref=[-3.0147,48.1988]
 ref_lamb=deg_to_Lamb(ref[0],ref[1])
 
-pathfile_name="triangle_test"
+pathfile_name="triangle_test.txt"
 
 logfile_name="logs_test"
 

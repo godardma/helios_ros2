@@ -45,14 +45,19 @@ def guidage(a,b,m,r=7):
     :param r: precision (on a pris 7m par défaut)
     :return: angle désiré
     '''
-    u = (b-a)/(np.linalg.norm(b-a))
-    e = np.linalg.det(np.hstack((u,m-a)))
-    bx,by=b.flatten()
-    ax,ay=a.flatten()
-    phi = np.arctan2(by-ay,bx-ax)
-    theta_barre = phi-np.arctan2(e,r)
+    try :
+        u = (b-a)/(np.linalg.norm(b-a))
+        e = np.linalg.det(np.hstack((u,m-a)))
+        bx,by=b.flatten()
+        ax,ay=a.flatten()
+        phi = np.arctan2(by-ay,bx-ax)
+        theta_barre = phi-np.arctan2(e,r)
 
-    return theta_barre
+        return theta_barre
+    except Exception as e:
+        return 0
+
+    # return theta_barre
 
 def validation(a,b,m):
     '''
@@ -76,7 +81,7 @@ class LineFollow(Node):
             PoseStamped,
             'pose',
             self.pose_callback,
-            10)
+            1)
         self.subscription_target = self.create_subscription(
             PointStamped,
             'target',

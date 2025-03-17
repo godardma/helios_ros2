@@ -10,36 +10,16 @@ def deg_to_Lamb (x1,y1):
     for pt in transformer.itransform(point):
         return pt
     
-# ref=[-3.0147,48.1988]     #Guerledan
-ref=[-3.014929, 48.199199]  #Guerledan2
-# ref=[-4.4738,48.4183]   #Brest
+ref=[-3.0147,48.1988]
 ref_lamb=deg_to_Lamb(ref[0],ref[1])
 
-pathfile_name="back_forth.txt"
+pathfile_name="triangle_test.txt"
 
-logfile_name="Guerl_2A_discharge_2"
+logfile_name="logs_test"
 
 
 def generate_launch_description():
     ld = LaunchDescription()
-    hemisphere_node = Node(
-        package="hemisphere_v500",
-        executable="hemisphere_v500_node",
-        parameters=[
-            {"X": ref_lamb[0]},
-            {"Y": ref_lamb[1]},
-            {"pathfile_name":pathfile_name},
-        ]
-    )
-    gnss_infos_node = Node(
-        package="helios_ros2",
-        executable="gnss_infos",
-        parameters=[
-            {"X": ref_lamb[0]},
-            {"Y": ref_lamb[1]},
-            {"pathfile_name":pathfile_name},
-        ]
-    )
     mission_node = Node(
         package="helios_ros2",
         executable="mission_publisher",
@@ -47,6 +27,33 @@ def generate_launch_description():
             {"X": ref_lamb[0]},
             {"Y": ref_lamb[1]},
             {"pathfile_name":pathfile_name},
+        ]
+    )
+    boat_node = Node(
+        package="usv_simulator",
+        executable="boat_simulator.py",
+        output="screen",
+        parameters=[
+            {"X": ref_lamb[0]},
+            {"Y": ref_lamb[1]},
+        ]
+    )
+    control_node = Node(
+        package="usv_simulator",
+        executable="boat_control.py",
+        output="screen",
+        parameters=[
+            {"X": ref_lamb[0]},
+            {"Y": ref_lamb[1]},
+        ]
+    )
+    interface_node=Node(
+        package="usv_simulator",
+        executable="command_to_twist.py",
+        output="screen",
+        parameters=[
+            {"X": ref_lamb[0]},
+            {"Y": ref_lamb[1]},
         ]
     )
     navigation_node = Node(
@@ -68,19 +75,20 @@ def generate_launch_description():
             {"Y": ref_lamb[1]},
         ]
     )
-    motors_node = Node(
+    map_to_ned_node= Node(
         package="helios_ros2",
-        executable="motors",
+        executable="map_to_ned",
         output="screen",
         parameters=[
             {"X": ref_lamb[0]},
             {"Y": ref_lamb[1]},
         ]
     )
-    # ld.add_action(hemisphere_node)
-    ld.add_action(gnss_infos_node)
     ld.add_action(navigation_node)
     ld.add_action(mission_node)
+    ld.add_action(boat_node)
     ld.add_action(command_node)
-    ld.add_action(motors_node)
+    ld.add_action(control_node)
+    ld.add_action(interface_node)
+    ld.add_action(map_to_ned_node)
     return ld

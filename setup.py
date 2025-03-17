@@ -25,12 +25,14 @@ setup(
     entry_points={
         'console_scripts': [
             'gnss_infos = helios_ros2.gnss_infos:main',
+            'qgis_visu = helios_ros2.position_socket:main',
             'mission_publisher = helios_ros2.mission_manager:main',
             'boat_simulator = helios_ros2.boat_simulator:main',
             'line_follow = helios_ros2.line_follow:main',
             'obstacle_centering = helios_ros2.obstacle_centering:main',
             'command = helios_ros2.command:main',
             'motors = helios_ros2.comm_arduino:main',
+            'map_to_ned = helios_ros2.map_to_ned:main'
         ],
     },
 )

@@ -47,12 +47,12 @@ class CommandNode(Node):
             PoseStamped,
             'pose',
             self.pose_callback,
-            10)
+            1)
         self.subscription_target = self.create_subscription(
             Float64,
             'theta_des',
             self.theta_des_callback,
-            10)
+            1)
         self.comm_publisher = self.create_publisher(Float64, 'commande', 10)
         timer_period = 0.1  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
@@ -65,9 +65,9 @@ class CommandNode(Node):
     def timer_callback(self):
         # Kp=20.0
         # Kd=10.0 
-        Kp=20.0
+        Kp=40.0
         # Kd=200.0
-        Kd=10
+        Kd=0
         self.up=Kp*sawtooth(self.theta_des-self.theta)
         
 
@@ -84,6 +84,12 @@ class CommandNode(Node):
         self.theta_sav=self.theta
         theta_dot=self.up-self.ud
         command=Float64()
+        # if (self.theta_des-self.theta)>0.8:
+        #     command.data=201.0
+        # elif (self.theta_des-self.theta)<-0.8:
+        #     command.data=-201.0
+        # else:
+        #     command.data=theta_dot
         command.data=theta_dot
 
         self.comm_publisher.publish(command)

@@ -55,7 +55,7 @@ class BoatSimulator(Node):
 
 
         self.comm=0.
-        self.theta,self.x,self.y=0.,0.,0.
+        self.theta,self.x,self.y=0.,2.,0.
         self.moteur=True
         
 
@@ -66,7 +66,7 @@ class BoatSimulator(Node):
         if self.moteur:
             self.x=self.x+v*np.cos(self.theta)*dt
             self.y=self.y+v*np.sin(self.theta)*dt
-            self.theta=self.theta+dt*self.comm
+            self.theta=self.theta+dt*self.comm*0.1
 
             self.pose.header.stamp = self.get_clock().now().to_msg()
             self.pose.pose.position.x=self.x

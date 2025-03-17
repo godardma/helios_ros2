@@ -47,6 +47,7 @@ class MissionManager(Node):
 
         f=open(package_share_directory+"/path/"+pathfile_name)
         lines=f.readlines()
+        self.get_logger().info('lines %d'%len(lines))
         self.path = PointCloud()
         self.path_done = PointCloud()
         self.path.header.frame_id="NED"
